@@ -131,7 +131,20 @@ class TestAnnotationBasePresenter(object):
                         target_selectors={'PositionSelector': {'start': 0, 'end': 12}})
 
         expected = [{'source': 'http://example.com', 'selector': {'PositionSelector': {'start': 0, 'end': 12}}}]
-        actual = AnnotationJSONPresenter(pyramid_request, ann).target
+        actual = AnnotationJSONPresenter(pyramid_request, ann).target()
+        assert expected == actual
+
+    def test_target_including_locator(self, pyramid_request):
+        ann = mock.Mock(target_uri='urn:x-pdf:foobar',
+                        target_locator='http://example.com',
+                        target_selectors={'PositionSelector': {'start': 0, 'end': 12}})
+
+        expected = [{
+            'source': 'urn:x-pdf:foobar',
+            'locator': 'http://example.com',
+            'selector': {'PositionSelector': {'start': 0, 'end': 12}}
+        }]
+        actual = AnnotationJSONPresenter(pyramid_request, ann).target(include_locator=True)
         assert expected == actual
 
     def test_target_missing_selectors(self, pyramid_request):
@@ -139,7 +152,7 @@ class TestAnnotationBasePresenter(object):
                         target_selectors=None)
 
         expected = [{'source': 'http://example.com'}]
-        actual = AnnotationJSONPresenter(pyramid_request, ann).target
+        actual = AnnotationJSONPresenter(pyramid_request, ann).target()
         assert expected == actual
 
     @pytest.fixture
@@ -155,6 +168,7 @@ class TestAnnotationJSONPresenter(object):
                         updated=datetime.datetime(2016, 2, 29, 10, 24, 5, 564),
                         userid='acct:luke',
                         target_uri='http://example.com',
+                        target_locator='http://example.com/locator',
                         text='It is magical!',
                         tags=['magic'],
                         groupid='__world__',
@@ -178,6 +192,7 @@ class TestAnnotationJSONPresenter(object):
                                     'update': ['acct:luke'],
                                     'delete': ['acct:luke']},
                     'target': [{'source': 'http://example.com',
+                                'locator': 'http://example.com/locator',
                                 'selector': [{'TestSelector': 'foobar'}]}],
                     'document': {'foo': 'bar'},
                     'links': {},

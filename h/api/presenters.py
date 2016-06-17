@@ -52,9 +52,12 @@ class AnnotationBasePresenter(object):
         else:
             return []
 
-    @property
-    def target(self):
+    def target(self, include_locator=False):
         target = {'source': self.annotation.target_uri}
+
+        if include_locator and self.annotation.target_locator:
+            target['locator'] = self.annotation.target_locator
+
         if self.annotation.target_selectors:
             target['selector'] = self.annotation.target_selectors
 
@@ -78,7 +81,7 @@ class AnnotationJSONPresenter(AnnotationBasePresenter):
             'tags': self.tags,
             'group': self.annotation.groupid,
             'permissions': self.permissions,
-            'target': self.target,
+            'target': self.target(include_locator=True),
             'document': docpresenter.asdict(),
             'links': self.links,
         }
@@ -113,7 +116,7 @@ class AnnotationSearchIndexPresenter(AnnotationBasePresenter):
             'tags': self.tags,
             'group': self.annotation.groupid,
             'permissions': self.permissions,
-            'target': self.target,
+            'target': self.target(),
             'document': docpresenter.asdict(),
         }
 
@@ -152,7 +155,7 @@ class AnnotationJSONLDPresenter(AnnotationBasePresenter):
             'modified': self.updated,
             'creator': self.annotation.userid,
             'body': self.bodies,
-            'target': self.target,
+            'target': self.target(),
         }
 
     @property
