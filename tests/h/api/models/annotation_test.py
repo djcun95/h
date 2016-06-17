@@ -50,6 +50,23 @@ def test_parent_id_of_annotation():
     assert ann.parent_id is None
 
 
+def test_target_locator_non_urn():
+    ann = Annotation(target_uri='https://example.org')
+    assert ann.target_locator == 'https://example.org'
+
+
+def test_target_locator_returns_non_urn_document_uri(db_session):
+    ann = Annotation(target_uri='urn:x-pdf:foobar', userid='luke')
+    doc = Document()
+    uri1 = DocumentURI(claimant=ann.target_uri, uri=ann.target_uri, document=doc)
+    uri2 = DocumentURI(claimant=ann.target_uri, uri='urn:x-pdf:foobaz', document=doc)
+    uri3 = DocumentURI(claimant=ann.target_uri, uri='https://example.org', document=doc)
+    db_session.add_all([ann, doc, uri1, uri2, uri3])
+    db_session.flush()
+
+    assert ann.target_locator == 'https://example.org'
+
+
 def test_acl_private():
     ann = Annotation(shared=False, userid='saoirse')
     actual = ann.__acl__()

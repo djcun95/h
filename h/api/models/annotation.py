@@ -117,6 +117,16 @@ class Annotation(Base, mixins.Timestamps):
         if self.references:
             return self.references[-1]
 
+    @property
+    def target_locator(self):
+        if self.target_uri and not self.target_uri.startswith('urn'):
+            return self.target_uri
+
+        if self.document:
+            for docuri in self.document.document_uris:
+                if docuri.uri.startswith('http://') or docuri.uri.startswith('https://'):
+                    return docuri.uri
+
     def __acl__(self):
         """Return a Pyramid ACL for this annotation."""
         acl = []
