@@ -2,6 +2,19 @@
 
 (See gh2642 for rationale for 'ng-show="true"')
  -->
+<ul class="annotation-type">
+  <li class="annotation-type__annotation" ng-click="filterAnnotationsByType('annotation')">
+    Annotations( {{ totalAnnotations }} )
+    <span class="Annotation-type__count">
+    </span>
+  </li>
+  <li class="annotation-type__note" ng-click="filterAnnotationsByType('note')">
+    Notes( {{ totalNotes }} )
+    <span class="Annotation-type__count">
+    </span>
+  </li>
+</ul>
+
 <ul class="thread-list ng-hide"
     ng-show="true"
     window-scroll="loadMore(20)">

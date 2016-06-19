@@ -4,6 +4,7 @@ var SearchClient = require('./search-client');
 var events = require('./events');
 var memoize = require('./util/memoize');
 var scopeTimeout = require('./util/scope-timeout');
+var metadata = require('./annotation-metadata');
 
 function firstKey(object) {
   for (var k in object) {
@@ -38,6 +39,27 @@ module.exports = function WidgetController(
 ) {
 
   /**
+   * Returns the number of top level annotations which are of type annotations
+   * and not notes or replies.
+   */
+  function countAnnotations(annotations) {
+    var totalAnnotations = annotations.reduce(function(annotationsCount, annotation) {
+      return metadata.isTypeAnnotation(annotation) ? annotationsCount+1 : annotationsCount;
+    }, 0);
+    return totalAnnotations;
+  };
+
+  /**
+   * Returns the number of top level annotations which are of type notes.
+   */
+  function countNotes(annotations) {
+    var totalNotes = annotations.reduce(function(notesCount, annotation) {
+      return metadata.isTypePageNote(annotation) ? notesCount+1 : notesCount;
+    }, 0);
+    return totalNotes;
+  };
+
+  /**
    * Returns the height of the thread for an annotation if it exists in the view
    * or undefined otherwise.
    */
@@ -65,6 +87,9 @@ module.exports = function WidgetController(
     return rootThread.thread(annotationUI.getState());
   }
 
+  // By default select the annotation tab
+  annotationUI.selectTab('annotation');
+
   // `visibleThreads` keeps track of the subset of all threads matching the
   // current filters which are in or near the viewport and the view then renders
   // only those threads, using placeholders above and below the visible threads
@@ -72,8 +97,9 @@ module.exports = function WidgetController(
   var visibleThreads = new VirtualThreadList($scope, window, thread());
   annotationUI.subscribe(function () {
     visibleThreads.setRootThread(thread());
+    $scope.totalAnnotations = countAnnotations(annotationUI.getState().annotations);
+    $scope.totalNotes = countNotes(annotationUI.getState().annotations);
   });
-
   visibleThreads.on('changed', function (state) {
     $scope.virtualThreadList = {
       visibleThreads: state.visibleThreads,
@@ -335,6 +361,11 @@ module.exports = function WidgetController(
 
   $scope.topLevelThreadCount = function () {
     return thread().totalChildren;
+  };
+
+  $scope.filterAnnotationsByType = function (type) {
+    $scope.clearSelection();
+    annotationUI.selectTab(type);
   };
 
   /**

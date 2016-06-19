@@ -70,6 +70,23 @@ function isNew(annotation) {
   return !annotation.id;
 }
 
+function isTypePageNote(annotation) {
+  if (annotation.references) {
+    return false;
+  }
+  if (annotation.target.length === 0 || !annotation.target[0].selector) {
+    return true;
+  };
+  return false;
+}
+
+function isTypeAnnotation(annotation) {
+  if (annotation.target.length > 0 && annotation.target[0].selector) {
+    return true;
+  };
+  return false;
+}
+
 /** Return a numeric key that can be used to sort annotations by location.
  *
  * @return {number} - A key representing the location of the annotation in
@@ -96,4 +113,6 @@ module.exports = {
   isReply: isReply,
   isNew: isNew,
   location: location,
+  isTypePageNote: isTypePageNote,
+  isTypeAnnotation: isTypeAnnotation,
 };

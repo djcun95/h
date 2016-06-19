@@ -57,6 +57,14 @@ function RootThread($rootScope, annotationUI, searchFilter, viewFilter) {
       };
     }
 
+    var threadFilterFn = function (thread) {
+      if(state.selectedTab === 'annotation') {
+        return metadata.isTypeAnnotation(thread.annotation);
+      } else if(state.selectedTab === 'note') {
+        return metadata.isTypePageNote(thread.annotation);
+      }
+    }
+
     // Get the currently loaded annotations and the set of inputs which
     // determines what is visible and build the visible thread structure
     return buildThread(state.annotations, {
@@ -66,6 +74,7 @@ function RootThread($rootScope, annotationUI, searchFilter, viewFilter) {
       selected: truthyKeys(state.selectedAnnotationMap || {}),
       sortCompareFn: sortFn,
       filterFn: filterFn,
+      threadFilterFn: threadFilterFn,
     });
   }
 

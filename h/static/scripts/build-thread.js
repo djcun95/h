@@ -23,6 +23,8 @@ var DEFAULT_THREAD_STATE = {
   visible: true,
   /** Replies to this annotation. */
   children: [],
+  /** Replies to this annotation. */
+  annotationsBySelectedTab: [],
   /**
     * The total number of children of this annotation,
     * including any which have been hidden by filters.
@@ -238,6 +240,11 @@ var defaultOpts = {
    */
   filterFn: undefined,
   /**
+   * Function that returns true if an annotation of a certain
+   * type - note or annotation, should be displayed.
+   */
+  threadFilterFn: undefined,
+  /**
    * Mapping of annotation IDs to expansion states.
    */
   expanded: {},
@@ -335,6 +342,10 @@ function buildThread(annotations, opts) {
                  !hasUnfilteredChildren,
     });
   });
+
+  // Get annotations which are of type notes of annotations depending
+  // on the filter.
+  thread.annotationsBySelectedTab = thread.children.filter(opts.threadFilterFn);
 
   // Remove top-level threads which contain no visible annotations
   thread.children = thread.children.filter(function (child) {
