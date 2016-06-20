@@ -70,9 +70,9 @@ function isNew(annotation) {
   return !annotation.id;
 }
 
-function isTypePageNote(annotation) {
+function isPageNote(annotation) {
   if (annotation && !annotation.deleted) {
-    if (isTypeReply(annotation)) {
+    if (isReply(annotation)) {
       return false;
     }
     if (annotation.target && (annotation.target.length === 0 || !annotation.target[0].selector)) {
@@ -82,18 +82,9 @@ function isTypePageNote(annotation) {
   return false;
 }
 
-function isTypeAnnotation(annotation) {
+function isAnnotation(annotation) {
   if (annotation && !annotation.deleted) {
     if (annotation.target && annotation.target.length > 0 && annotation.target[0].selector) {
-      return true;
-    };
-  }
-  return false;
-}
-
-function isTypeReply(annotation) {
-  if (annotation && !annotation.deleted) {
-    if (annotation.references && annotation.references.length > 0) {
       return true;
     };
   }
@@ -126,7 +117,6 @@ module.exports = {
   isReply: isReply,
   isNew: isNew,
   location: location,
-  isTypePageNote: isTypePageNote,
-  isTypeAnnotation: isTypeAnnotation,
-  isTypeReply: isTypeReply,
+  isPageNote: isPageNote,
+  isAnnotation: isAnnotation,
 };

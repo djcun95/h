@@ -43,20 +43,20 @@ module.exports = function WidgetController(
    * and not notes or replies.
    */
   function countAnnotations(annotations) {
-    var totalAnnotations = annotations.reduce(function(annotationsCount, annotation) {
-      return metadata.isTypeAnnotation(annotation) ? annotationsCount+1 : annotationsCount;
+    var total = annotations.reduce(function(count, annotation) {
+      return metadata.isAnnotation(annotation) ? count+1 : count;
     }, 0);
-    return totalAnnotations;
+    return total;
   };
 
   /**
    * Returns the number of top level annotations which are of type notes.
    */
   function countNotes(annotations) {
-    var totalNotes = annotations.reduce(function(notesCount, annotation) {
-      return metadata.isTypePageNote(annotation) ? notesCount+1 : notesCount;
+    var total = annotations.reduce(function(count, annotation) {
+      return metadata.isPageNote(annotation) ? count+1 : count;
     }, 0);
-    return totalNotes;
+    return total;
   };
 
   /**
@@ -363,7 +363,7 @@ module.exports = function WidgetController(
     return thread().totalChildren;
   };
 
-  $scope.filterAnnotationsByType = function (type) {
+  $scope.selectTab = function (type) {
     $scope.clearSelection();
     annotationUI.selectTab(type);
   };
