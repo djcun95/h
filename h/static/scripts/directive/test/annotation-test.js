@@ -916,6 +916,7 @@ describe('annotation', function() {
           var annotation = {
             user: 'acct:fred@hypothes.is',
             text: 'foo',
+            target: [{}],
           };
           annotation.$create = sinon.stub().returns(Promise.resolve());
           var controller = createDirective(annotation).controller;
@@ -1030,6 +1031,7 @@ describe('annotation', function() {
         var updatedModel = {
           id: parts.annotation.id,
           text: 'new text',
+          target: [{}],
         };
 
         $rootScope.$emit(events.ANNOTATION_UPDATED, updatedModel);
@@ -1155,6 +1157,7 @@ describe('annotation', function() {
           id: 'test-annotation-id',
           user: 'acct:bill@localhost',
           text: 'Initial annotation body text',
+          target: [{}],
           // Allow the initial save of the annotation to succeed.
           $create: function() {
             return Promise.resolve();
@@ -1190,6 +1193,7 @@ describe('annotation', function() {
         var controller = createDirective({
           id: 'test-annotation-id',
           user: 'acct:bill@localhost',
+          target: [{}],
         }).controller;
         controller.edit();
         assert.equal(controller.action, 'edit');
@@ -1203,6 +1207,7 @@ describe('annotation', function() {
 
         var controller = createDirective({
           user: 'acct:bill@localhost',
+          target: [{}],
           $create: function () {
             this.id = 'new-annotation-id';
             return Promise.resolve();
@@ -1229,7 +1234,8 @@ describe('annotation', function() {
       it('displays annotation tags', function () {
         var directive = createDirective({
           id: '1234',
-          tags: ['atag']
+          tags: ['atag'],
+          target: [{}],
         });
         var links = [].slice.apply(directive.element[0].querySelectorAll('a'));
         var tagLinks = links.filter(function (link) {

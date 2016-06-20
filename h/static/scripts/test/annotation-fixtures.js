@@ -23,7 +23,7 @@ function newAnnotation() {
   return {
     id: undefined,
     $highlight: undefined,
-    target: ['foo', 'bar'],
+    target: [{}],
     references: [],
     text: 'Annotation text',
     tags: ['tag_1', 'tag_2']
@@ -35,7 +35,7 @@ function newEmptyAnnotation() {
   return {
     id: undefined,
     $highlight: undefined,
-    target: ['foo'],
+    target: [{}],
     references: [],
     text: '',
     tags: [],
@@ -48,6 +48,7 @@ function newEmptyAnnotation() {
 function newHighlight() {
   return {
     id: undefined,
+    target: [{}],
     $highlight: true
   };
 }
@@ -59,7 +60,7 @@ function oldAnnotation() {
   return {
     id: 'annotation_id',
     $highlight: undefined,
-    target: ['foo', 'bar'],
+    target: [{}],
     references: [],
     text: 'This is my annotation',
     tags: ['tag_1', 'tag_2']
@@ -73,7 +74,7 @@ function oldHighlight() {
   return {
     id: 'annotation_id',
     $highlight: undefined,
-    target: ['foo', 'bar'],
+    target: [{}],
     references: [],
     text: '',
     tags: []
@@ -86,7 +87,7 @@ function oldHighlight() {
 function oldPageNote() {
   return {
     highlight: undefined,
-    target: [],
+    target: [{}],
     references: [],
     text: '',
     tags: []
@@ -99,7 +100,7 @@ function oldPageNote() {
 function oldReply() {
   return {
     highlight: undefined,
-    target: ['foo'],
+    target: [{}],
     references: ['parent_annotation_id'],
     text: '',
     tags: []
