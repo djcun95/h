@@ -88,7 +88,7 @@ module.exports = function WidgetController(
   }
 
   // By default select the annotation tab
-  annotationUI.selectTab('annotation');
+  annotationUI.selectTab(annotationUI.TAB_ANNOTATIONS);
 
   // `visibleThreads` keeps track of the subset of all threads matching the
   // current filters which are in or near the viewport and the view then renders

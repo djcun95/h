@@ -58,9 +58,9 @@ function RootThread($rootScope, annotationUI, searchFilter, viewFilter) {
     }
 
     var threadFilterFn = function (thread) {
-      if(state.selectedTab === 'annotation') {
+      if(state.selectedTab === annotationUI.TAB_ANNOTATIONS) {
         return (metadata.isTypeAnnotation(thread.annotation) || metadata.isTypeReply(thread.annotation));
-      } else if(state.selectedTab === 'note') {
+      } else if(state.selectedTab === annotationUI.TAB_NOTES) {
         return metadata.isTypePageNote(thread.annotation);
       }
     }
@@ -102,9 +102,10 @@ function RootThread($rootScope, annotationUI, searchFilter, viewFilter) {
         // If the annotation is of type note or annotation, make sure
         // the appropriate tab is selected. If it is of type reply, user
         // stays in the selected tab.
-        var type = metadata.getAnnotationType(annotation);
-        if (type === 'note' || type === 'annotation') {
-          annotationUI.selectTab(type);
+        if (metadata.isTypePageNote(annotation)) {
+          annotationUI.selectTab(annotationUI.TAB_NOTES);
+        } else if (metadata.isTypeAnnotation(annotation)) {
+          annotationUI.selectTab(annotationUI.TAB_ANNOTATIONS);
         }
 
         (annotation.references || []).forEach(function (parent) {

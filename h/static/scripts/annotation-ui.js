@@ -162,6 +162,9 @@ module.exports = function (settings) {
   }
 
   return {
+    TAB_ANNOTATIONS: 'annotation',
+    TAB_NOTES: 'note',
+
     /**
      * Return the current UI state of the sidebar. This should not be modified
      * directly but only though the helper methods below.
