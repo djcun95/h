@@ -98,6 +98,15 @@ function RootThread($rootScope, annotationUI, searchFilter, viewFilter) {
 
       // Ensure that newly created annotations are always visible
       if (event.name === events.BEFORE_ANNOTATION_CREATED) {
+
+        // If the annotation is of type note or annotation, make sure
+        // the appropriate tab is selected. If it is of type reply, user
+        // stays in the selected tab.
+        var type = metadata.getAnnotationType(annotation);
+        if (type === 'note' || type === 'annotation') {
+          annotationUI.selectTab(type);
+        }
+
         (annotation.references || []).forEach(function (parent) {
           annotationUI.setCollapsed(parent, false);
         });

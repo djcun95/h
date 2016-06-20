@@ -56,6 +56,19 @@ function extractDocumentMetadata(annotation) {
   return document_;
 }
 
+/** Return the type of an annotation is - annotation, page note or reply. */
+function getAnnotationType(annotation) {
+  if (isTypePageNote(annotation)) {
+    return 'note';
+  }
+  if (isTypeAnnotation(annotation)) {
+    return 'annotation';
+  }
+  if (isTypeReply(annotation)) {
+    return 'reply';
+  }
+}
+
 /** Return `true` if the given annotation is a reply, `false` otherwise. */
 function isReply(annotation) {
   return (annotation.references || []).length > 0;
@@ -129,4 +142,5 @@ module.exports = {
   isTypePageNote: isTypePageNote,
   isTypeAnnotation: isTypeAnnotation,
   isTypeReply: isTypeReply,
+  getAnnotationType: getAnnotationType,
 };
