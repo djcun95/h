@@ -97,7 +97,7 @@ VirtualThreadList.prototype._height = function (id) {
 /** Return the vertical offset of an annotation card from the top of the list. */
 VirtualThreadList.prototype.yOffsetOf = function (id) {
   var self = this;
-  var allThreads = this._rootThread.annotationsBySelectedTab;
+  var allThreads = this._rootThread.children;
   var matchIndex = allThreads.findIndex(function (thread) {
     return thread.id === id;
   });
@@ -133,7 +133,7 @@ VirtualThreadList.prototype._updateVisibleThreads = function () {
   // actually be created.
   var visibleThreads = [];
 
-  var allThreads = this._rootThread.annotationsBySelectedTab;
+  var allThreads = this._rootThread.children;
   var visibleHeight = this.window.innerHeight;
   var usedHeight = 0;
   var thread;

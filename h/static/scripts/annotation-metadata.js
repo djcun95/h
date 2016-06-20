@@ -71,19 +71,32 @@ function isNew(annotation) {
 }
 
 function isTypePageNote(annotation) {
-  if (annotation.references) {
-    return false;
+  if (annotation && !annotation.deleted) {
+    if (isTypeReply(annotation)) {
+      return false;
+    }
+    if (annotation.target && (annotation.target.length === 0 || !annotation.target[0].selector)) {
+      return true;
+    }
   }
-  if (annotation.target.length === 0 || !annotation.target[0].selector) {
-    return true;
-  };
   return false;
 }
 
 function isTypeAnnotation(annotation) {
-  if (annotation.target.length > 0 && annotation.target[0].selector) {
-    return true;
-  };
+  if (annotation && !annotation.deleted) {
+    if (annotation.target && annotation.target.length > 0 && annotation.target[0].selector) {
+      return true;
+    };
+  }
+  return false;
+}
+
+function isTypeReply(annotation) {
+  if (annotation && !annotation.deleted) {
+    if (annotation.references && annotation.references.length > 0) {
+      return true;
+    };
+  }
   return false;
 }
 
@@ -115,4 +128,5 @@ module.exports = {
   location: location,
   isTypePageNote: isTypePageNote,
   isTypeAnnotation: isTypeAnnotation,
+  isTypeReply: isTypeReply,
 };

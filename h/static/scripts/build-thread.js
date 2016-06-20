@@ -23,8 +23,6 @@ var DEFAULT_THREAD_STATE = {
   visible: true,
   /** Replies to this annotation. */
   children: [],
-  /** Replies to this annotation. */
-  annotationsBySelectedTab: [],
   /**
     * The total number of children of this annotation,
     * including any which have been hidden by filters.
@@ -343,14 +341,14 @@ function buildThread(annotations, opts) {
     });
   });
 
-  // Get annotations which are of type notes of annotations depending
-  // on the filter.
-  thread.annotationsBySelectedTab = thread.children.filter(opts.threadFilterFn);
-
   // Remove top-level threads which contain no visible annotations
   thread.children = thread.children.filter(function (child) {
     return child.visible || hasVisibleChildren(child);
   });
+
+  // Get annotations which are of type notes or annotations depending
+  // on the filter.
+  thread.children = thread.children.filter(opts.threadFilterFn);
 
   // Sort the root thread according to the current search criteria
   thread = sortThread(thread, opts.sortCompareFn, opts.replySortCompareFn);

@@ -59,7 +59,7 @@ function RootThread($rootScope, annotationUI, searchFilter, viewFilter) {
 
     var threadFilterFn = function (thread) {
       if(state.selectedTab === 'annotation') {
-        return metadata.isTypeAnnotation(thread.annotation);
+        return (metadata.isTypeAnnotation(thread.annotation) || metadata.isTypeReply(thread.annotation));
       } else if(state.selectedTab === 'note') {
         return metadata.isTypePageNote(thread.annotation);
       }
