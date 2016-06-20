@@ -7,69 +7,59 @@ var extractDocumentMetadata = annotationMetadata.extractDocumentMetadata;
 describe('annotation-metadata', function () {
   describe('.extractDocumentMetadata', function() {
 
-    context('when the model has a document property', function() {
-      it('returns the hostname from model.uri as the domain', function() {
+    context('when target[0].locator is available', function() {
+      it('returns it as the uri', function() {
         var model = {
-          document: {},
-          uri: 'http://example.com/'
+          uri: 'http://example.com/',
+          target: [{
+            locator: 'http://wikipedia.org/'
+          }],
+        };
+
+        assert.equal(extractDocumentMetadata(model).uri, 'http://wikipedia.org/');
+      });
+
+      it('uses it for the domain', function() {
+        var model = {
+          uri: 'http://example.com/',
+          target: [{
+            locator: 'http://wikipedia.org/'
+          }],
+        };
+
+        assert.equal(extractDocumentMetadata(model).domain, 'wikipedia.org');
+      });
+    });
+
+    context('when target has no locator', function() {
+      it('returns the annotation.uri as the uri', function() {
+        var model = {
+          uri: 'http://example.com/',
+          target: [{}],
+        };
+
+        assert.equal(extractDocumentMetadata(model).uri, 'http://example.com/');
+      });
+
+      it('uses the annotation.uri for the domain', function() {
+        var model = {
+          uri: 'http://example.com/',
+          target: [{}],
         };
 
         assert.equal(extractDocumentMetadata(model).domain, 'example.com');
       });
+    });
 
-      context('when model.uri starts with "urn"', function() {
-        it(
-          'uses the first document.link uri that doesn\'t start with "urn"',
-          function() {
-            var model = {
-              uri: 'urn:isbn:0451450523',
-              document: {
-                link: [
-                  {href: 'urn:isan:0000-0000-9E59-0000-O-0000-0000-2'},
-                  {href: 'http://example.com/'}
-                ]
-              }
-            };
-
-            assert.equal(
-              extractDocumentMetadata(model).uri, 'http://example.com/');
-          }
-        );
-      });
-
-      context('when model.uri does not start with "urn"', function() {
-        it('uses model.uri as the uri', function() {
-          var model = {
-            document: {},
-            uri: 'http://example.com/'
-          };
-
-          assert.equal(
-            extractDocumentMetadata(model).uri, 'http://example.com/');
-        });
-      });
-
-      context('when document.title is a string', function() {
-        it('returns document.title as title', function() {
+    context('when the model has a document property', function() {
+      context('when the document has a title', function() {
+        it('returns the first value as the title', function() {
           var model = {
             uri: 'http://example.com/',
-            document: {
-              title: 'My Document'
-            }
-          };
-
-          assert.equal(
-            extractDocumentMetadata(model).title, model.document.title);
-        });
-      });
-
-      context('when document.title is an array', function() {
-        it('returns document.title[0] as title', function() {
-          var model = {
-            uri: 'http://example.com/',
+            target: [{}],
             document: {
               title: ['My Document', 'My Other Document']
-            }
+            },
           };
 
           assert.equal(
@@ -80,8 +70,8 @@ describe('annotation-metadata', function () {
       context('when there is no document.title', function() {
         it('returns the domain as the title', function() {
           var model = {
-            document: {},
             uri: 'http://example.com/',
+            target: [{}],
           };
 
           assert.equal(extractDocumentMetadata(model).title, 'example.com');
@@ -90,22 +80,27 @@ describe('annotation-metadata', function () {
     });
 
     context('when the model does not have a document property', function() {
-      it('returns model.uri for the uri', function() {
-        var model = {uri: 'http://example.com/'};
+      context('when there is a target locator', function() {
+        it('returns the hostname of target locator for the title', function() {
+          var model = {
+            target: [{
+              locator: 'http://example.com/'
+            }],
+          };
 
-        assert.equal(extractDocumentMetadata(model).uri, model.uri);
+          assert.equal(extractDocumentMetadata(model).title, 'example.com');
+        });
       });
 
-      it('returns the hostname of model.uri for the domain', function() {
-        var model = {uri: 'http://example.com/'};
+      context('when there is no target locator', function() {
+        it('returns the hostname of model.uri for the title', function() {
+          var model = {
+            uri: 'http://example.com/',
+            target: [{}],
+          };
 
-        assert.equal(extractDocumentMetadata(model).domain, 'example.com');
-      });
-
-      it('returns the hostname of model.uri for the title', function() {
-        var model = {uri: 'http://example.com/'};
-
-        assert.equal(extractDocumentMetadata(model).title, 'example.com');
+          assert.equal(extractDocumentMetadata(model).title, 'example.com');
+        });
       });
     });
 
@@ -113,9 +108,10 @@ describe('annotation-metadata', function () {
       it('truncates the title with "…"', function() {
         var model = {
           uri: 'http://example.com/',
+          target: [{}],
           document: {
-            title: 'My Really Really Long Document Title'
-          }
+            title: ['My Really Really Long Document Title']
+          },
         };
 
         assert.equal(

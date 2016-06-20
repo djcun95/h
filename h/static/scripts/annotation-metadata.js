@@ -15,25 +15,18 @@
 function extractDocumentMetadata(annotation) {
   var document_;
   var uri = annotation.uri;
-  var domain = new URL(uri).hostname;
-  if (annotation.document) {
-    if (uri.indexOf('urn') === 0) {
-      var i;
-      for (i = 0; i < annotation.document.link.length; i++) {
-        var link = annotation.document.link[i];
-        if (link.href.indexOf('urn:') === 0) {
-          continue;
-        }
-        uri = link.href;
-        break;
-      }
-    }
 
+  var locator = annotation.target[0].locator;
+  if (locator) {
+    uri = locator;
+  }
+
+  var domain = new URL(uri).hostname;
+
+  if (annotation.document) {
     var documentTitle;
-    if (Array.isArray(annotation.document.title)) {
+    if (annotation.document.title && annotation.document.title.length > 0) {
       documentTitle = annotation.document.title[0];
-    } else {
-      documentTitle = annotation.document.title;
     }
 
     document_ = {
